@@ -2,7 +2,8 @@ package strip
 
 import (
 	"reflect"
-	"strip/inject"
+
+	"github.com/wujiu2020/strip/inject"
 )
 
 type FilterFunc func() inject.Provider

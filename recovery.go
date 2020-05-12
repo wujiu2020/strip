@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"strip/inject"
+
+	"github.com/wujiu2020/strip/inject"
 )
 
 const (

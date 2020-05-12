@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strip/inject"
-	"strip/utils"
+
+	"github.com/wujiu2020/strip/inject"
+	"github.com/wujiu2020/strip/utils"
 )
 
 const HeaderPoweredBy = "X-Powered-By"

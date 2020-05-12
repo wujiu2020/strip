@@ -2,7 +2,7 @@ package strip
 
 import (
 	gocontext "context"
-	"strip/inject"
+	"github.com/wujiu2020/strip/inject"
 )
 
 type Context interface {
