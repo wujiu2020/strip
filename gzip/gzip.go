@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 const (
@@ -22,7 +22,7 @@ const (
 
 // All returns a Handler that adds gzip compression to all requests
 func All() interface{} {
-	return func(rw http.ResponseWriter, req *http.Request, ctx teapot.Context) {
+	return func(rw http.ResponseWriter, req *http.Request, ctx strip.Context) {
 		if !strings.Contains(req.Header.Get(HeaderAcceptEncoding), "gzip") {
 			return
 		}
@@ -31,7 +31,7 @@ func All() interface{} {
 		headers.Set(HeaderContentEncoding, "gzip")
 		headers.Set(HeaderVary, HeaderAcceptEncoding)
 
-		gzw := &gzipResponseWriter{ResponseWriter: rw.(teapot.ResponseWriter)}
+		gzw := &gzipResponseWriter{ResponseWriter: rw.(strip.ResponseWriter)}
 		defer gzw.close()
 		ctx.ProvideAs(gzw, (*http.ResponseWriter)(nil))
 
@@ -41,7 +41,7 @@ func All() interface{} {
 }
 
 type gzipResponseWriter struct {
-	teapot.ResponseWriter
+	strip.ResponseWriter
 	gzw *gzip.Writer
 	one sync.Once
 }

@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 func Test_RealIp(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
 	ip := "1.1.1.1"
 

@@ -8,11 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mediocregopher/radix.v2/pool"
-
 	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/globalsign/mgo"
+	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/mgo.v2"
 )
 
 var (

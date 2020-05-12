@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 func Test_Config(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
 	c, err := NewConfiger(Config{
 		FileName: "testdata/conf.ini",
@@ -38,7 +38,7 @@ func Test_Config(t *testing.T) {
 }
 
 func Test_ListSection(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
 	c, err := LoadIniFile("testdata/conf.ini")
 	assert.NoError(err)
@@ -51,7 +51,7 @@ func Test_ListSection(t *testing.T) {
 }
 
 func Test_ConfigParent(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
 	def, err := NewConfiger(Config{
 		FileName: "testdata/conf.ini",

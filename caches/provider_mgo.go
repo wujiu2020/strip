@@ -6,7 +6,7 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/utils"
 )
 
 type MgoConfig struct {

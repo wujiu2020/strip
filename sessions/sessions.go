@@ -3,7 +3,7 @@ package sessions
 import (
 	"fmt"
 
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/utils"
 )
 
 const (

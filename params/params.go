@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 var DefaultMaxMemory int64 = 32 << 20 /* 32 MB */
@@ -28,7 +28,7 @@ type Params struct {
 	url.Values // A unified view of all the individual param maps below.
 
 	// Set by the router
-	Route teapot.RouteInfo // Parameters extracted from the route,  e.g. /customers/{id}
+	Route strip.RouteInfo // Parameters extracted from the route,  e.g. /customers/{id}
 
 	// Set by the ParamsFilter
 	Query url.Values // Parameters from the query string, e.g. /index?limit=10
@@ -38,7 +38,7 @@ type Params struct {
 	tmpFiles []*os.File                         // Temp files used during the request.
 
 	req *http.Request
-	log teapot.Logger
+	log strip.Logger
 }
 
 func ParseParams(params *Params, maxMemory int64) error {
@@ -245,12 +245,12 @@ func (p *Params) calcValues() url.Values {
 func ParamsParser() interface{} {
 	var maxMemory int64
 
-	return func(req *http.Request, ctx teapot.Context, log teapot.Logger, config *teapot.Config) *Params {
+	return func(req *http.Request, ctx strip.Context, log strip.Logger, config *strip.Config) *Params {
 		params := new(Params)
 		params.req = req
 		params.log = log
 
-		var routeInfo *teapot.RouteInfo
+		var routeInfo *strip.RouteInfo
 		ctx.Find(&routeInfo, "")
 
 		if routeInfo != nil {

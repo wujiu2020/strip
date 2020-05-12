@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/howeyc/fsnotify"
-	"github.com/teapots/teapot-cmd/proc"
+	"github.com/wujiu2020/strip/teapot-cmd/proc"
 )
 
 type runJson struct {

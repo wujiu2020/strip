@@ -3,7 +3,7 @@ package sessions
 import (
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/teapots/caches"
+	"github.com/wujiu2020/strip/caches"
 )
 
 type MgoConfig struct {

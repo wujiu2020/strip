@@ -1,8 +1,8 @@
 package sessions
 
 import (
-	"github.com/teapots/caches"
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/caches"
+	"github.com/wujiu2020/strip/utils"
 )
 
 const (

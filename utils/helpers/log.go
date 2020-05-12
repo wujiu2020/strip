@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/teapots/teapot"
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip"
+	"github.com/wujiu2020/strip/utils"
 )
 
-var X teapot.LoggerAdv
+var X strip.LoggerAdv
 
 func init() {
 	logOut := log.New(os.Stderr, "", log.LstdFlags|log.Lmicroseconds)
@@ -17,23 +17,23 @@ func init() {
 	// 每机器每进程的 RequestId
 	hostname, _ := os.Hostname()
 
-	logger := teapot.NewReqLogger(logOut, hostname)
+	logger := strip.NewReqLogger(logOut, hostname)
 	logger.SetLineInfo(true)
 	logger.SetShortLine(true)
 	logger.SetColorMode(false)
-	logger.EnableLogStack(teapot.LevelCritical)
+	logger.EnableLogStack(strip.LevelCritical)
 
 	X = logger
 }
 
-func GetLogger(ctx context.Context) (log teapot.Logger) {
+func GetLogger(ctx context.Context) (log strip.Logger) {
 	if err := utils.CtxFindValue(ctx, &log); err != nil {
 		log = X
 	}
 	return
 }
 
-func WithLogger(ctx context.Context, log teapot.Logger) context.Context {
+func WithLogger(ctx context.Context, log strip.Logger) context.Context {
 	ctx = utils.CtxWithValue(ctx, &log)
 	return ctx
 }

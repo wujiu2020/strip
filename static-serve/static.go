@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 type StaticOption struct {
@@ -61,7 +61,7 @@ func ServeFilter(prefix, directory string, opts ...StaticOption) interface{} {
 		return
 	}
 
-	return func(rw http.ResponseWriter, req *http.Request, log teapot.Logger) {
+	return func(rw http.ResponseWriter, req *http.Request, log strip.Logger) {
 		if !opt.AnyMethod && req.Method != "GET" && req.Method != "HEAD" {
 			return
 		}

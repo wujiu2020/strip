@@ -3,7 +3,7 @@ package caches
 import (
 	"github.com/mediocregopher/radix.v2/pool"
 	"github.com/mediocregopher/radix.v2/redis"
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/utils"
 )
 
 type RedisConfig struct {

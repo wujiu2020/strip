@@ -5,13 +5,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 func Test_ServeStatic(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
-	tea := teapot.New()
+	tea := strip.New()
 	tea.Filter(ServeFilter("", "testdata"))
 
 	assert.True(routeFound(tea, "GET", "/test.txt", "test\n"))
@@ -21,23 +21,23 @@ func Test_ServeStatic(t *testing.T) {
 }
 
 func Test_Prefix(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
-	tea := teapot.New()
+	tea := strip.New()
 	tea.Filter(ServeFilter("/", "testdata"))
 	assert.True(routeFound(tea, "GET", "/test.txt", "test\n"))
 
-	tea = teapot.New()
+	tea = strip.New()
 	tea.Filter(ServeFilter("/prefix", "testdata"))
 	assert.True(routeFound(tea, "GET", "/prefix/test.txt", "test\n"))
 	assert.True(routeFound(tea, "GET", "/prefix////test.txt", "test\n"))
 
-	tea = teapot.New()
+	tea = strip.New()
 	tea.Filter(ServeFilter("/prefix/", "testdata"))
 	assert.True(routeFound(tea, "GET", "/prefix/test.txt", "test\n"))
 	assert.True(routeFound(tea, "GET", "/prefix////test.txt", "test\n"))
 
-	tea = teapot.New()
+	tea = strip.New()
 	tea.Filter(ServeFilter("prefix", "testdata"))
 	assert.True(routeFound(tea, "GET", "/prefix/test.txt", "test\n"))
 	assert.True(routeFound(tea, "GET", "/prefix////test.txt", "test\n"))
@@ -46,22 +46,22 @@ func Test_Prefix(t *testing.T) {
 }
 
 func Test_WrongPath(t *testing.T) {
-	assert := &teapot.Assert{T: t}
+	assert := &strip.Assert{T: t}
 
-	tea := teapot.New()
+	tea := strip.New()
 	tea.Filter(ServeFilter("", "testdata"))
 
 	assert.True(routeNotFound(tea, "GET", "/../testdata/test.txt"))
 }
 
-func routeFound(tea *teapot.Teapot, method, urlStr, body string) bool {
+func routeFound(tea *strip.Teapot, method, urlStr, body string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
 	tea.ServeHTTP(rec, req)
 	return rec.Code == http.StatusOK && rec.Body.String() == body
 }
 
-func routeNotFound(tea *teapot.Teapot, method, urlStr string) bool {
+func routeNotFound(tea *strip.Teapot, method, urlStr string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
 	tea.ServeHTTP(rec, req)

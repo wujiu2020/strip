@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/teapots/config"
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
+	"github.com/wujiu2020/strip/config"
 )
 
 type SliceValue []string
@@ -39,11 +39,11 @@ func (s *SliceValue) Unique() {
 	*s = v
 }
 
-func LoadClassicEnv(tea *teapot.Teapot, app string, env interface{}, dir string, addFiles ...string) {
+func LoadClassicEnv(tea *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) {
 	LoadConfigFiles(tea, app, env, dir, addFiles...)
 }
 
-func LoadConfigFiles(tea *teapot.Teapot, app string, env interface{}, dir string, addFiles ...string) (conf config.Configer) {
+func LoadConfigFiles(tea *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) (conf config.Configer) {
 	directory, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	wd, _ := os.Getwd()
 	wd, _ = filepath.Abs(wd)
@@ -107,10 +107,10 @@ func LoadConfigFiles(tea *teapot.Teapot, app string, env interface{}, dir string
 	return
 }
 
-func UseGlobalLogger(tea *teapot.Teapot) {
+func UseGlobalLogger(tea *strip.Teapot) {
 	X.SetFlatLine(tea.Config.RunMode.IsProd())
 	X.SetColorMode(tea.Config.RunMode.IsDev())
 	X.SetShortLine(tea.Config.RunMode.IsProd())
 	tea.SetLogger(X)
-	tea.ProvideAs(X, (*teapot.ReqLogger)(nil))
+	tea.ProvideAs(X, (*strip.ReqLogger)(nil))
 }

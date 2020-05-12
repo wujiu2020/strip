@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 var jsonContentType = "application/json; charset=UTF-8"
@@ -14,7 +14,7 @@ type ResBody struct {
 	Body   interface{} `json:"-"`
 }
 
-func (r *ResBody) Write(ctx teapot.Context, rw http.ResponseWriter, req *http.Request) {
+func (r *ResBody) Write(ctx strip.Context, rw http.ResponseWriter, req *http.Request) {
 	if r.Status == 0 {
 		r.Status = http.StatusOK
 	}
@@ -28,7 +28,7 @@ func (r *ResBody) Write(ctx teapot.Context, rw http.ResponseWriter, req *http.Re
 	}
 
 	if err := writeJsonBody(r.Status, r.Body, ctx, rw, req); err != nil {
-		var logger teapot.Logger
+		var logger strip.Logger
 		ctx.Find(&logger, "")
 		logger.Warn("response write failed:", err)
 	}
@@ -46,8 +46,8 @@ func Ret(status int) *ResBody {
 	return &ResBody{Status: status}
 }
 
-func writeJsonBody(status int, body interface{}, ctx teapot.Context, rw http.ResponseWriter, req *http.Request) (err error) {
-	config := new(teapot.Config)
+func writeJsonBody(status int, body interface{}, ctx strip.Context, rw http.ResponseWriter, req *http.Request) (err error) {
+	config := new(strip.Config)
 	// use struct, so u can just skip error
 	ctx.Find(&config, "")
 

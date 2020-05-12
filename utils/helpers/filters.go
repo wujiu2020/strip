@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/teapots/request-logger"
-	"github.com/teapots/teapot"
+	reqlogger "github.com/wujiu2020/strip/request-logger"
+	"github.com/wujiu2020/strip/teapot"
 )
 
 const (

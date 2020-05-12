@@ -8,13 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 var (
 	commands = map[string]*Command{}
-	log      = func() teapot.Logger {
-		l := teapot.NewLogger(nlog.New(os.Stderr, "", nlog.LstdFlags|nlog.Lmicroseconds))
+	log      = func() strip.Logger {
+		l := strip.NewLogger(nlog.New(os.Stderr, "", nlog.LstdFlags|nlog.Lmicroseconds))
 		l.SetColorMode(true)
 		l.SetLineInfo(false)
 		l.SetFlatLine(false)

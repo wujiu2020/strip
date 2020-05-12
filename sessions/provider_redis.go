@@ -2,7 +2,7 @@ package sessions
 
 import (
 	"github.com/mediocregopher/radix.v2/pool"
-	"github.com/teapots/caches"
+	"github.com/wujiu2020/strip/caches"
 )
 
 type RedisConfig struct {

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/teapots/inject"
-	"github.com/teapots/teapot"
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip"
+	"github.com/wujiu2020/strip/inject"
+	"github.com/wujiu2020/strip/utils"
 )
 
 const (
@@ -18,14 +18,14 @@ const (
 	HeaderXForwardedFor = "X-Forwarded-For"
 )
 
-type LoggerContentFilter func(ctx teapot.Context, rw http.ResponseWriter, req *http.Request, content string) string
+type LoggerContentFilter func(ctx strip.Context, rw http.ResponseWriter, req *http.Request, content string) string
 
 type LoggerOption struct {
 	ColorMode     bool
 	LineInfo      bool
 	ShortLine     bool
 	FlatLine      bool
-	LogStackLevel teapot.Level
+	LogStackLevel strip.Level
 	ReqidFilter   LoggerContentFilter
 	PrefixFilter  LoggerContentFilter
 	ReqBegFilter  LoggerContentFilter
@@ -33,12 +33,12 @@ type LoggerOption struct {
 }
 
 // ReqLogger filter
-func ReqLoggerFilter(out teapot.LogPrinter, opts ...LoggerOption) inject.Provider {
+func ReqLoggerFilter(out strip.LogPrinter, opts ...LoggerOption) inject.Provider {
 	var opt LoggerOption
 	if len(opts) > 0 {
 		opt = opts[0]
 	}
-	return func(ctx teapot.Context, rw http.ResponseWriter, req *http.Request) {
+	return func(ctx strip.Context, rw http.ResponseWriter, req *http.Request) {
 
 		// use origin request id or create new request id
 		reqId := req.Header.Get(HeaderReqid)
@@ -56,7 +56,7 @@ func ReqLoggerFilter(out teapot.LogPrinter, opts ...LoggerOption) inject.Provide
 			prefix = opt.PrefixFilter(ctx, rw, req, prefix)
 		}
 
-		log := teapot.NewReqLogger(out, reqId)
+		log := strip.NewReqLogger(out, reqId)
 		log.SetPrefix(prefix)
 
 		// write request id to request and response
@@ -69,8 +69,8 @@ func ReqLoggerFilter(out teapot.LogPrinter, opts ...LoggerOption) inject.Provide
 		log.SetColorMode(opt.ColorMode)
 		log.EnableLogStack(opt.LogStackLevel)
 
-		ctx.ProvideAs(log, (*teapot.Logger)(nil))
-		ctx.ProvideAs(log, (*teapot.ReqLogger)(nil))
+		ctx.ProvideAs(log, (*strip.Logger)(nil))
+		ctx.ProvideAs(log, (*strip.ReqLogger)(nil))
 
 		req = setLoggerInContext(ctx, req, log)
 
@@ -82,11 +82,11 @@ func ReqLoggerFilter(out teapot.LogPrinter, opts ...LoggerOption) inject.Provide
 			reqBeg = opt.ReqBegFilter(ctx, rw, req, reqBeg)
 		}
 		if reqBeg != "" {
-			log.Info(reqBeg, teapot.LineOpt{Hidden: true})
+			log.Info(reqBeg, strip.LineOpt{Hidden: true})
 		}
 
-		res := rw.(teapot.ResponseWriter)
-		res.Before(func(rw teapot.ResponseWriter) {
+		res := rw.(strip.ResponseWriter)
+		res.Before(func(rw strip.ResponseWriter) {
 			rw.Header().Del(HeaderReqid)
 			rw.Header().Set(HeaderReqid, reqId)
 			times := fmt.Sprintf("%0.3fms", float64(time.Since(start).Nanoseconds())/1e6)
@@ -105,7 +105,7 @@ func ReqLoggerFilter(out teapot.LogPrinter, opts ...LoggerOption) inject.Provide
 			reqEnd = opt.ReqEndFilter(ctx, rw, req, reqEnd)
 		}
 		if reqEnd != "" {
-			log.Info(reqEnd, teapot.LineOpt{Hidden: true})
+			log.Info(reqEnd, strip.LineOpt{Hidden: true})
 		}
 	}
 }
@@ -128,8 +128,8 @@ func realIp(req *http.Request) string {
 	return host
 }
 
-func setLoggerInContext(ctx teapot.Context, req *http.Request, log teapot.Logger) *http.Request {
-	var l teapot.Logger = log
+func setLoggerInContext(ctx strip.Context, req *http.Request, log strip.Logger) *http.Request {
+	var l = log
 	reqCtx := utils.CtxWithValue(req.Context(), &l)
 	req = req.WithContext(reqCtx)
 

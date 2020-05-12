@@ -1,7 +1,7 @@
 package sessions
 
 import (
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/utils"
 )
 
 type dummyStore struct {

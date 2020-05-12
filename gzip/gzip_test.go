@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 func Test_GzipAll(t *testing.T) {
@@ -16,10 +16,10 @@ func Test_GzipAll(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	before := false
 
-	tea := teapot.New()
+	tea := strip.New()
 	tea.Filter(All())
 	tea.Filter(func(r http.ResponseWriter) {
-		r.(teapot.ResponseWriter).Before(func(rw teapot.ResponseWriter) {
+		r.(strip.ResponseWriter).Before(func(rw strip.ResponseWriter) {
 			before = true
 		})
 	})
@@ -83,7 +83,7 @@ func (h *hijackableResponse) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 func Test_ResponseWriter_Hijack(t *testing.T) {
 	hijackable := newHijackableResponse()
 
-	tea := teapot.New()
+	tea := strip.New()
 	tea.Filter(All())
 	tea.Filter(func(rw http.ResponseWriter) {
 		if hj, ok := rw.(http.Hijacker); !ok {

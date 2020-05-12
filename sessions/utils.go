@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/utils"
 )
 
 func CreateSid() (sid string) {

@@ -2,7 +2,7 @@ package sessions
 
 import (
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/teapots/caches"
+	"github.com/wujiu2020/strip/caches"
 )
 
 type McConfig struct {

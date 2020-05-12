@@ -2,7 +2,7 @@ package caches
 
 import (
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/teapots/utils"
+	"github.com/wujiu2020/strip/utils"
 )
 
 type McConfig struct {

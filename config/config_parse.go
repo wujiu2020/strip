@@ -3,10 +3,10 @@ package config
 import (
 	"reflect"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
-func Decode(config *teapot.Config, env interface{}) {
+func Decode(config *strip.Config, env interface{}) {
 	val := reflect.ValueOf(env)
 
 	if val.Kind() != reflect.Ptr {
@@ -42,7 +42,7 @@ func Decode(config *teapot.Config, env interface{}) {
 	}
 }
 
-func parseSection(config *teapot.Config, val reflect.Value, sec string) {
+func parseSection(config *strip.Config, val reflect.Value, sec string) {
 	typ := val.Type()
 	for i := 0; i < val.NumField(); i++ {
 		fVal := val.Field(i)

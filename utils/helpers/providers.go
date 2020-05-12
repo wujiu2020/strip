@@ -1,8 +1,8 @@
 package helpers
 
 import (
-	"github.com/teapots/params"
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip/params"
+	"github.com/wujiu2020/strip/teapot"
 )
 
 func LoadClassicProviders(tea *teapot.Teapot) {

@@ -4,7 +4,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/teapots/teapot"
+	"github.com/wujiu2020/strip"
 )
 
 type RawBody struct {
@@ -12,7 +12,7 @@ type RawBody struct {
 	Body   interface{} `json:"-"`
 }
 
-func (r *RawBody) Write(ctx teapot.Context, rw http.ResponseWriter, req *http.Request) {
+func (r *RawBody) Write(ctx strip.Context, rw http.ResponseWriter, req *http.Request) {
 	if r.Status == 0 {
 		r.Status = http.StatusOK
 	}
@@ -42,7 +42,7 @@ func (r *RawBody) Write(ctx teapot.Context, rw http.ResponseWriter, req *http.Re
 		err = writeJsonBody(r.Status, r.Body, ctx, rw, req)
 	}
 	if err != nil {
-		var logger teapot.Logger
+		var logger strip.Logger
 		ctx.Find(&logger, "")
 		logger.Warn("response write failed:", err)
 	}
