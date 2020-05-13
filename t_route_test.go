@@ -363,30 +363,30 @@ func Test_WildRouteMustEnd(t *testing.T) {
 	)
 }
 
-func routeFound(tea *Teapot, method, urlStr string) bool {
+func routeFound(sp *Strip, method, urlStr string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
+	sp.ServeHTTP(rec, req)
 	return rec.Code == http.StatusOK
 }
 
-func routeNotFound(tea *Teapot, method, urlStr string) bool {
+func routeNotFound(sp *Strip, method, urlStr string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
+	sp.ServeHTTP(rec, req)
 	return rec.Code == http.StatusNotFound
 }
 
-func responseEqual(tea *Teapot, method, urlStr string, resp string) bool {
+func responseEqual(sp *Strip, method, urlStr string, resp string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
+	sp.ServeHTTP(rec, req)
 	return rec.Body.String() == resp
 }
 
-func justATeapot(tea *Teapot, method, urlStr string) bool {
+func justATeapot(sp *Strip, method, urlStr string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
+	sp.ServeHTTP(rec, req)
 	return rec.Code == http.StatusTeapot
 }

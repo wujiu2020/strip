@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func ReplaceFilters(old, new *Teapot) {
+func ReplaceFilters(old, new *Strip) {
 	old.filters = new.filters
 }
 

@@ -7,12 +7,13 @@ import (
 	"os"
 
 	"github.com/wujiu2020/strip/inject"
+
 	"github.com/wujiu2020/strip/utils"
 )
 
 const HeaderPoweredBy = "X-Powered-By"
 
-type Teapot struct {
+type Strip struct {
 	route *routeRoot
 
 	// global filters
@@ -31,74 +32,74 @@ type Teapot struct {
 	Config *Config
 }
 
-var _ inject.TypeProvider = new(Teapot)
+var _ inject.TypeProvider = new(Strip)
 
-func New() *Teapot {
-	teapot := &Teapot{
+func New() *Strip {
+	strip := &Strip{
 		route:  newRouteRoot(),
 		inject: inject.New(),
 		Config: newConfig(),
 	}
 
-	teapot.Server = &http.Server{
-		Handler: teapot,
+	strip.Server = &http.Server{
+		Handler: strip,
 	}
 
-	teapot.Provide(teapot.Config)
+	strip.Provide(strip.Config)
 
 	log := NewLogger(log.New(os.Stderr, "", log.LstdFlags|log.Lmicroseconds))
 	log.SetColorMode(true)
-	teapot.SetLogger(log)
+	strip.SetLogger(log)
 
-	teapot.NotFound(defaultNotFound)
-	return teapot
+	strip.NotFound(defaultNotFound)
+	return strip
 }
 
-func (t *Teapot) ImportConfig(c Configer) {
-	t.Config.setParent(c)
-	t.Config.Bind(&t.Config.RunPath, "run_path")
-	t.Config.Bind(&t.Config.RunMode, "run_mode")
-	t.Config.Bind(&t.Config.HttpAddr, "http_addr")
-	t.Config.Bind(&t.Config.HttpPort, "http_port")
+func (s *Strip) ImportConfig(c Configer) {
+	s.Config.setParent(c)
+	s.Config.Bind(&s.Config.RunPath, "run_path")
+	s.Config.Bind(&s.Config.RunMode, "run_mode")
+	s.Config.Bind(&s.Config.HttpAddr, "http_addr")
+	s.Config.Bind(&s.Config.HttpPort, "http_port")
 }
 
-func (t *Teapot) NotFound(handlers ...interface{}) {
-	t.route.notFound(handlers...)
+func (s *Strip) NotFound(handlers ...interface{}) {
+	s.route.notFound(handlers...)
 }
 
-func (t *Teapot) Logger() Logger {
-	return t.logger
+func (s *Strip) Logger() Logger {
+	return s.logger
 }
 
-func (t *Teapot) SetLogger(logger LoggerAdv) {
-	t.logger = logger
-	t.ProvideAs(logger, (*Logger)(nil))
+func (s *Strip) SetLogger(logger LoggerAdv) {
+	s.logger = logger
+	s.ProvideAs(logger, (*Logger)(nil))
 }
 
-func (t *Teapot) Injector() inject.Injector {
-	return t.inject
+func (s *Strip) Injector() inject.Injector {
+	return s.inject
 }
 
-func (t *Teapot) Provide(provs ...interface{}) inject.TypeProvider {
-	return t.inject.Provide(provs...)
+func (s *Strip) Provide(provs ...interface{}) inject.TypeProvider {
+	return s.inject.Provide(provs...)
 }
 
-func (t *Teapot) ProvideAs(prov interface{}, typ interface{}, names ...string) inject.TypeProvider {
-	return t.inject.ProvideAs(prov, typ, names...)
+func (s *Strip) ProvideAs(prov interface{}, typ interface{}, names ...string) inject.TypeProvider {
+	return s.inject.ProvideAs(prov, typ, names...)
 }
 
-func (t *Teapot) Filter(handlers ...interface{}) {
-	t.filters = t.filters.append(makeFilters(handlers)...)
+func (s *Strip) Filter(handlers ...interface{}) {
+	s.filters = s.filters.append(makeFilters(handlers)...)
 }
 
-func (t *Teapot) Routers(handlers ...Handler) *Teapot {
+func (s *Strip) Routers(handlers ...Handler) *Strip {
 	args := calcRouterArgs(handlers)
 
-	t.route.configRoutes(args)
-	return t
+	s.route.configRoutes(args)
+	return s
 }
 
-func (t *Teapot) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+func (s *Strip) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// server info
 	rw.Header().Set(HeaderPoweredBy, "Teapot")
 
@@ -106,13 +107,13 @@ func (t *Teapot) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	trw := newResponseWriter(rw)
 
 	var ctx Context
-	ctx = newContext(nil, trw, t.filters, t.route.handle)
+	ctx = newContext(nil, trw, s.filters, s.route.handle)
 
 	goctx := utils.CtxWithValue(req.Context(), &ctx)
 	req = req.WithContext(goctx)
 	ctx.ReplaceContext(goctx)
 
-	ctx.SetParent(t.inject)
+	ctx.SetParent(s.inject)
 	ctx.Provide(req)
 	ctx.ProvideAs(trw, (*http.ResponseWriter)(nil))
 
@@ -122,21 +123,21 @@ func (t *Teapot) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	trw.Write(nil)
 }
 
-func (t *Teapot) Run() error {
-	mode := string(t.Config.RunMode)
-	addr := fmt.Sprintf("%s:%s", t.Config.HttpAddr, t.Config.HttpPort)
+func (s *Strip) Run() error {
+	mode := string(s.Config.RunMode)
+	addr := fmt.Sprintf("%s:%s", s.Config.HttpAddr, s.Config.HttpPort)
 
-	t.Server.Addr = addr
+	s.Server.Addr = addr
 
-	if !t.Config.RunMode.IsDev() {
-		t.logger.SetColorMode(false)
+	if !s.Config.RunMode.IsDev() {
+		s.logger.SetColorMode(false)
 	} else {
-		addr = newBrush("32")(t.Server.Addr)
+		addr = newBrush("32")(s.Server.Addr)
 		mode = newBrush("32")(mode)
 	}
 
-	t.logger.Infof("Teapot listening on %s in [%s] mode", addr, mode)
-	err := t.Server.ListenAndServe()
-	t.logger.Emergency(err)
+	s.logger.Infof("Teapot listening on %s in [%s] mode", addr, mode)
+	err := s.Server.ListenAndServe()
+	s.logger.Emergency(err)
 	return err
 }

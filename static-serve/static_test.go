@@ -54,16 +54,16 @@ func Test_WrongPath(t *testing.T) {
 	assert.True(routeNotFound(tea, "GET", "/../testdata/test.txt"))
 }
 
-func routeFound(tea *strip.Teapot, method, urlStr, body string) bool {
+func routeFound(sp *strip.Strip, method, urlStr, body string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
+	sp.ServeHTTP(rec, req)
 	return rec.Code == http.StatusOK && rec.Body.String() == body
 }
 
-func routeNotFound(tea *strip.Teapot, method, urlStr string) bool {
+func routeNotFound(sp *strip.Strip, method, urlStr string) bool {
 	req, _ := http.NewRequest(method, urlStr, nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
+	sp.ServeHTTP(rec, req)
 	return rec.Code == http.StatusNotFound
 }
