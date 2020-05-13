@@ -41,26 +41,26 @@ func Test_pathParam(t *testing.T) {
 func Test_NoRoute(t *testing.T) {
 	assert := &Assert{T: t}
 
-	tea := New().Routers()
-	assert.True(routeNotFound(tea, "GET", "/"))
+	sp := New().Routers()
+	assert.True(routeNotFound(sp, "GET", "/"))
 }
 
 func Test_RootRoute(t *testing.T) {
 	assert := &Assert{T: t}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		Get(nopFunc),
 	)
-	assert.True(routeFound(tea, "GET", "/"))
-	assert.True(routeFound(tea, "HEAD", "/"))
-	assert.True(routeNotFound(tea, "POST", "/"))
+	assert.True(routeFound(sp, "GET", "/"))
+	assert.True(routeFound(sp, "HEAD", "/"))
+	assert.True(routeNotFound(sp, "POST", "/"))
 
-	tea = New().Routers(
+	sp = New().Routers(
 		Post(nopFunc),
 	)
-	assert.True(routeNotFound(tea, "GET", "/"))
-	assert.True(routeNotFound(tea, "HEAD", "/"))
-	assert.True(routeFound(tea, "POST", "/"))
+	assert.True(routeNotFound(sp, "GET", "/"))
+	assert.True(routeNotFound(sp, "HEAD", "/"))
+	assert.True(routeFound(sp, "POST", "/"))
 
 }
 
@@ -72,7 +72,7 @@ func Test_UrlRoute(t *testing.T) {
 		path = req.URL.Path
 	}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		// root
 		Get(nopFunc),
 
@@ -108,47 +108,47 @@ func Test_UrlRoute(t *testing.T) {
 		Router("/user/:uid/dashboard", Put(pathFunc)),
 	)
 
-	assert.True(routeFound(tea, "GET", "/"))
+	assert.True(routeFound(sp, "GET", "/"))
 
-	assert.True(routeFound(tea, "GET", "/user"))
-	assert.True(routeFound(tea, "PUT", "/user"))
+	assert.True(routeFound(sp, "GET", "/user"))
+	assert.True(routeFound(sp, "PUT", "/user"))
 
-	assert.True(routeFound(tea, "GET", "/user/dashboard"))
+	assert.True(routeFound(sp, "GET", "/user/dashboard"))
 	assert.True(path == "/user/dashboard")
 
-	assert.True(routeFound(tea, "GET", "/user/10"))
+	assert.True(routeFound(sp, "GET", "/user/10"))
 	assert.True(path == "/user/10")
 
-	assert.True(routeFound(tea, "POST", "/user/10:undelete"))
+	assert.True(routeFound(sp, "POST", "/user/10:undelete"))
 	assert.True(path == "/user/10:undelete")
 
-	assert.True(routeFound(tea, "PATCH", "/user/10:undelete/pass"))
+	assert.True(routeFound(sp, "PATCH", "/user/10:undelete/pass"))
 	assert.True(path == "/user/10:undelete/pass")
 
-	assert.True(routeFound(tea, "POST", "/user/10:move"))
+	assert.True(routeFound(sp, "POST", "/user/10:move"))
 	assert.True(path == "/user/10:move")
 
-	assert.True(routeFound(tea, "GET", "/user/10/dashboard"))
+	assert.True(routeFound(sp, "GET", "/user/10/dashboard"))
 	assert.True(path == "/user/10/dashboard")
 
-	assert.True(routeFound(tea, "GET", "/user/10/name/username"))
+	assert.True(routeFound(sp, "GET", "/user/10/name/username"))
 	assert.True(path == "/user/10/name/username")
 
-	assert.True(routeNotFound(tea, "GET", "/user/10/name/username/pass"))
+	assert.True(routeNotFound(sp, "GET", "/user/10/name/username/pass"))
 
-	assert.True(routeFound(tea, "GET", "/user/10/test2/nopanic/more"))
+	assert.True(routeFound(sp, "GET", "/user/10/test2/nopanic/more"))
 	assert.True(path == "/user/10/test2/nopanic/more")
 
-	assert.True(routeNotFound(tea, "GET", "/user/10/test2/nopanic"))
+	assert.True(routeNotFound(sp, "GET", "/user/10/test2/nopanic"))
 
-	assert.True(routeFound(tea, "PUT", "/user/dashboard"))
+	assert.True(routeFound(sp, "PUT", "/user/dashboard"))
 	assert.True(path == "/user/dashboard")
 
-	assert.True(routeFound(tea, "PUT", "/user/10/dashboard"))
+	assert.True(routeFound(sp, "PUT", "/user/10/dashboard"))
 	assert.True(path == "/user/10/dashboard")
 
-	assert.True(routeNotFound(tea, "POST", "/user"))
-	assert.True(routeNotFound(tea, "POST", "/user/dashboard"))
+	assert.True(routeNotFound(sp, "POST", "/user"))
+	assert.True(routeNotFound(sp, "POST", "/user/dashboard"))
 }
 
 func Test_RouteInfo(t *testing.T) {
@@ -159,7 +159,7 @@ func Test_RouteInfo(t *testing.T) {
 		info = i
 	}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		// root
 		Get(infoFunc),
 
@@ -180,26 +180,26 @@ func Test_RouteInfo(t *testing.T) {
 		),
 	)
 
-	assert.True(routeFound(tea, "GET", "/user/101"))
+	assert.True(routeFound(sp, "GET", "/user/101"))
 	assert.True(info.Get("uid") == "101")
 
-	assert.True(routeFound(tea, "GET", "/user/101/name/slene"))
+	assert.True(routeFound(sp, "GET", "/user/101/name/slene"))
 	assert.True(info.Get("uid") == "101")
 	assert.True(info.Get("name") == "slene")
 
-	assert.True(routeFound(tea, "GET", "/"))
+	assert.True(routeFound(sp, "GET", "/"))
 	assert.True(info.Path == "/")
 
-	assert.True(routeFound(tea, "GET", "/user"))
+	assert.True(routeFound(sp, "GET", "/user"))
 	assert.True(info.Path == "/user")
 
-	assert.True(routeFound(tea, "GET", "/user/101"))
+	assert.True(routeFound(sp, "GET", "/user/101"))
 	assert.True(info.Path == "/user/:uid")
 
-	assert.True(routeFound(tea, "GET", "/user/101/name/slene"))
+	assert.True(routeFound(sp, "GET", "/user/101/name/slene"))
 	assert.True(info.Path == "/user/:uid/name/:name")
 
-	assert.True(routeFound(tea, "GET", "/user/101/name/slene:customVerb"))
+	assert.True(routeFound(sp, "GET", "/user/101/name/slene:customVerb"))
 	assert.True(info.Path == "/user/:uid/name/:name:customVerb")
 	assert.True(info.Get("uid") == "101")
 	assert.True(info.Get("name") == "slene")
@@ -213,7 +213,7 @@ func Test_RouteWild(t *testing.T) {
 		rw.Write([]byte(req.Method + ":" + i.Path + ":" + path))
 	}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		Get(nopFunc),
 		Router("/route/wild",
 			Get(pathFunc),
@@ -253,33 +253,33 @@ func Test_RouteWild(t *testing.T) {
 		),
 	)
 
-	assert.True(responseEqual(tea, "GET", "/route/wild", "GET:/route/wild:"))
-	assert.True(responseEqual(tea, "GET", "/route/wild/", "GET:/route/wild:"))
-	assert.True(responseEqual(tea, "GET", "/route/wild/1/2",
+	assert.True(responseEqual(sp, "GET", "/route/wild", "GET:/route/wild:"))
+	assert.True(responseEqual(sp, "GET", "/route/wild/", "GET:/route/wild:"))
+	assert.True(responseEqual(sp, "GET", "/route/wild/1/2",
 		"GET:/route/wild/*:splat:1/2",
 	))
-	assert.True(responseEqual(tea, "GET", "/route/wild2/1/2",
+	assert.True(responseEqual(sp, "GET", "/route/wild2/1/2",
 		"GET:/route/wild2/*:splat:1/2",
 	))
-	assert.True(responseEqual(tea, "POST", "/route/wild3/1/2",
+	assert.True(responseEqual(sp, "POST", "/route/wild3/1/2",
 		"POST:/route/wild3/*:splat:1/2",
 	))
-	assert.True(responseEqual(tea, "GET", "/route/wild3/user",
+	assert.True(responseEqual(sp, "GET", "/route/wild3/user",
 		"GET:/route/wild3/user:",
 	))
-	assert.True(responseEqual(tea, "GET", "/route/wild3/1",
+	assert.True(responseEqual(sp, "GET", "/route/wild3/1",
 		"GET:/route/wild3/:uid:",
 	))
-	assert.True(responseEqual(tea, "GET", "/route/wild3/1/order",
+	assert.True(responseEqual(sp, "GET", "/route/wild3/1/order",
 		"GET:/route/wild3/:uid/order:",
 	))
-	assert.True(responseEqual(tea, "GET", "/route/wild4/1/get/order",
+	assert.True(responseEqual(sp, "GET", "/route/wild4/1/get/order",
 		"GET:/route/wild4/*:splat:1/get/order",
 	))
-	assert.True(responseEqual(tea, "POST", "/route/wild4/1/post/order",
+	assert.True(responseEqual(sp, "POST", "/route/wild4/1/post/order",
 		"POST:/route/wild4/*:splat:1/post/order",
 	))
-	assert.True(responseEqual(tea, "PUT", "/route/wild4/1/put/order",
+	assert.True(responseEqual(sp, "PUT", "/route/wild4/1/put/order",
 		"PUT:/route/wild4/*:splat:1/put/order",
 	))
 

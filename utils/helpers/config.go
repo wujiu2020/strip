@@ -39,11 +39,11 @@ func (s *SliceValue) Unique() {
 	*s = v
 }
 
-func LoadClassicEnv(tea *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) {
-	LoadConfigFiles(tea, app, env, dir, addFiles...)
+func LoadClassicEnv(sp *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) {
+	LoadConfigFiles(sp, app, env, dir, addFiles...)
 }
 
-func LoadConfigFiles(tea *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) (conf config.Configer) {
+func LoadConfigFiles(sp *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) (conf config.Configer) {
 	directory, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	wd, _ := os.Getwd()
 	wd, _ = filepath.Abs(wd)
@@ -58,19 +58,19 @@ func LoadConfigFiles(tea *strip.Teapot, app string, env interface{}, dir string,
 	for _, d := range directories {
 		files = append(files, []string{
 			filepath.Join(d, "default.ini"),
-			filepath.Join(d, fmt.Sprintf("default.%s.ini", tea.Config.RunMode)),
+			filepath.Join(d, fmt.Sprintf("default.%s.ini", sp.Config.RunMode)),
 		}...)
 	}
 	for _, d := range directories {
 		files = append(files, []string{
 			filepath.Join(d, app+".ini"),
-			filepath.Join(d, app+fmt.Sprintf(".%s.ini", tea.Config.RunMode)),
+			filepath.Join(d, app+fmt.Sprintf(".%s.ini", sp.Config.RunMode)),
 		}...)
 	}
 	for _, d := range directories {
 		files = append(files, []string{
 			filepath.Join(d, "override.ini"),
-			filepath.Join(d, fmt.Sprintf("override.%s.ini", tea.Config.RunMode)),
+			filepath.Join(d, fmt.Sprintf("override.%s.ini", sp.Config.RunMode)),
 		}...)
 	}
 	skipNum := len(files)
@@ -86,14 +86,14 @@ func LoadConfigFiles(tea *strip.Teapot, app string, env interface{}, dir string,
 		conf, err := config.LoadIniFile(path)
 		if err != nil {
 			if !os.IsNotExist(err) || n >= skipNum {
-				tea.Logger().Errorf("%s load err: %v", path, err)
+				sp.Logger().Errorf("%s load err: %v", path, err)
 			}
 		} else {
 			if last != nil {
 				conf.SetParent(last)
 			}
 			last = conf
-			tea.Logger().Infof("%s load success", path)
+			sp.Logger().Infof("%s load success", path)
 		}
 	}
 
@@ -102,15 +102,15 @@ func LoadConfigFiles(tea *strip.Teapot, app string, env interface{}, dir string,
 	}
 
 	conf = last
-	tea.ImportConfig(last)
-	config.Decode(tea.Config, env)
+	sp.ImportConfig(last)
+	config.Decode(sp.Config, env)
 	return
 }
 
-func UseGlobalLogger(tea *strip.Teapot) {
-	X.SetFlatLine(tea.Config.RunMode.IsProd())
-	X.SetColorMode(tea.Config.RunMode.IsDev())
-	X.SetShortLine(tea.Config.RunMode.IsProd())
-	tea.SetLogger(X)
-	tea.ProvideAs(X, (*strip.ReqLogger)(nil))
+func UseGlobalLogger(sp *strip.Teapot) {
+	X.SetFlatLine(sp.Config.RunMode.IsProd())
+	X.SetColorMode(sp.Config.RunMode.IsDev())
+	X.SetShortLine(sp.Config.RunMode.IsProd())
+	sp.SetLogger(X)
+	sp.ProvideAs(X, (*strip.ReqLogger)(nil))
 }

@@ -30,8 +30,7 @@ func Test_ConfigBind(t *testing.T) {
 	test := testConfig{
 		"run_mode": "test",
 		"year":     "2014",
-		"toggle":
-			"1",
+		"toggle":   "1",
 		"array":    "1,2,",
 	}
 	config := newConfig()
@@ -70,17 +69,17 @@ func Test_DefaultConfig(t *testing.T) {
 		addr string
 		port string
 	)
-	tea := New().Routers()
-	tea.Routers(Get(func(config *Config) {
+	sp := New().Routers()
+	sp.Routers(Get(func(config *Config) {
 		mode = config.RunMode
 		addr = config.HttpAddr
 		port = config.HttpPort
 	}))
 
-	assert.True(routeFound(tea, "GET", "/"))
-	assert.True(mode == tea.Config.RunMode)
-	assert.True(addr == tea.Config.HttpAddr)
-	assert.True(port == tea.Config.HttpPort)
+	assert.True(routeFound(sp, "GET", "/"))
+	assert.True(mode == sp.Config.RunMode)
+	assert.True(addr == sp.Config.HttpAddr)
+	assert.True(port == sp.Config.HttpPort)
 }
 
 func Test_ImportConfig(t *testing.T) {
@@ -91,8 +90,8 @@ func Test_ImportConfig(t *testing.T) {
 		addr string
 		port string
 	)
-	tea := New().Routers()
-	tea.Routers(Get(func(config *Config) {
+	sp := New().Routers()
+	sp.Routers(Get(func(config *Config) {
 		mode = config.RunMode
 		addr = config.HttpAddr
 		port = config.HttpPort
@@ -103,9 +102,9 @@ func Test_ImportConfig(t *testing.T) {
 		"http_addr": "1.1.1.1",
 		"http_port": "8080",
 	}
-	tea.ImportConfig(c)
+	sp.ImportConfig(c)
 
-	assert.True(routeFound(tea, "GET", "/"))
+	assert.True(routeFound(sp, "GET", "/"))
 	assert.True(mode.IsTest())
 	assert.True(addr == "1.1.1.1")
 	assert.True(port == "8080")

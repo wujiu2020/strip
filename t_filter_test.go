@@ -9,10 +9,10 @@ import (
 func Test_Filter(t *testing.T) {
 	assert := &Assert{T: t}
 
-	tea := New()
+	sp := New()
 
 	globalFilter := func(req *http.Request, rw http.ResponseWriter) {
-		rw.Header().Set(HeaderPoweredBy, "i'm a teapot")
+		rw.Header().Set(HeaderPoweredBy, "i'm a sppot")
 	}
 
 	routerFunc := func(req *http.Request, rw http.ResponseWriter) {
@@ -20,9 +20,9 @@ func Test_Filter(t *testing.T) {
 	}
 
 	// app filter
-	tea.Filter(globalFilter)
+	sp.Filter(globalFilter)
 
-	tea.Routers(
+	sp.Routers(
 		// app filter cannot be exempt
 		// because it execute before route match
 		Exempt(globalFilter),
@@ -68,19 +68,19 @@ func Test_Filter(t *testing.T) {
 		),
 	)
 
-	assert.True(justATeapot(tea, "GET", "/"))
-	assert.False(justATeapot(tea, "GET", "/home"))
-	assert.True(justATeapot(tea, "GET", "/dash"))
-	assert.False(justATeapot(tea, "GET", "/user"))
-	assert.True(justATeapot(tea, "GET", "/user/1"))
-	assert.True(justATeapot(tea, "GET", "/user/name"))
-	assert.False(justATeapot(tea, "GET", "/user/friend"))
-	assert.False(justATeapot(tea, "GET", "/user/email"))
+	assert.True(justATeapot(sp, "GET", "/"))
+	assert.False(justATeapot(sp, "GET", "/home"))
+	assert.True(justATeapot(sp, "GET", "/dash"))
+	assert.False(justATeapot(sp, "GET", "/user"))
+	assert.True(justATeapot(sp, "GET", "/user/1"))
+	assert.True(justATeapot(sp, "GET", "/user/name"))
+	assert.False(justATeapot(sp, "GET", "/user/friend"))
+	assert.False(justATeapot(sp, "GET", "/user/email"))
 
 	req, _ := http.NewRequest("GET", "/home", nil)
 	rec := httptest.NewRecorder()
-	tea.ServeHTTP(rec, req)
-	assert.True(rec.Header().Get(HeaderPoweredBy) == "i'm a teapot")
+	sp.ServeHTTP(rec, req)
+	assert.True(rec.Header().Get(HeaderPoweredBy) == "i'm a sppot")
 }
 
 func Test_Filter_Context(t *testing.T) {
@@ -88,7 +88,7 @@ func Test_Filter_Context(t *testing.T) {
 	written := false
 
 	actionFilterProvide := func(rw http.ResponseWriter, ctx Context) {
-		con := "i'm a teapot"
+		con := "i'm a sppot"
 		ctx.Provide(&con)
 
 		ctx.Next()
@@ -96,8 +96,8 @@ func Test_Filter_Context(t *testing.T) {
 		written = rw.(ResponseWriter).Written()
 	}
 
-	tea := New()
-	tea.Routers(
+	sp := New()
+	sp.Routers(
 		Router("/home",
 			// for nextContext in action filter
 			Filter(actionFilterProvide),
@@ -107,6 +107,6 @@ func Test_Filter_Context(t *testing.T) {
 		),
 	)
 
-	assert.True(responseEqual(tea, "GET", "/home", "i'm a teapot"))
+	assert.True(responseEqual(sp, "GET", "/home", "i'm a sppot"))
 	assert.True(written)
 }

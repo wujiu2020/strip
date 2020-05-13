@@ -11,47 +11,47 @@ import (
 func Test_ServeStatic(t *testing.T) {
 	assert := &strip.Assert{T: t}
 
-	tea := strip.New()
-	tea.Filter(ServeFilter("", "testdata"))
+	sp := strip.New()
+	sp.Filter(ServeFilter("", "testdata"))
 
-	assert.True(routeFound(tea, "GET", "/test.txt", "test\n"))
-	assert.True(routeFound(tea, "HEAD", "/test.txt", ""))
+	assert.True(routeFound(sp, "GET", "/test.txt", "test\n"))
+	assert.True(routeFound(sp, "HEAD", "/test.txt", ""))
 
-	assert.True(routeNotFound(tea, "POST", "/test.txt"))
+	assert.True(routeNotFound(sp, "POST", "/test.txt"))
 }
 
 func Test_Prefix(t *testing.T) {
 	assert := &strip.Assert{T: t}
 
-	tea := strip.New()
-	tea.Filter(ServeFilter("/", "testdata"))
-	assert.True(routeFound(tea, "GET", "/test.txt", "test\n"))
+	sp := strip.New()
+	sp.Filter(ServeFilter("/", "testdata"))
+	assert.True(routeFound(sp, "GET", "/test.txt", "test\n"))
 
-	tea = strip.New()
-	tea.Filter(ServeFilter("/prefix", "testdata"))
-	assert.True(routeFound(tea, "GET", "/prefix/test.txt", "test\n"))
-	assert.True(routeFound(tea, "GET", "/prefix////test.txt", "test\n"))
+	sp = strip.New()
+	sp.Filter(ServeFilter("/prefix", "testdata"))
+	assert.True(routeFound(sp, "GET", "/prefix/test.txt", "test\n"))
+	assert.True(routeFound(sp, "GET", "/prefix////test.txt", "test\n"))
 
-	tea = strip.New()
-	tea.Filter(ServeFilter("/prefix/", "testdata"))
-	assert.True(routeFound(tea, "GET", "/prefix/test.txt", "test\n"))
-	assert.True(routeFound(tea, "GET", "/prefix////test.txt", "test\n"))
+	sp = strip.New()
+	sp.Filter(ServeFilter("/prefix/", "testdata"))
+	assert.True(routeFound(sp, "GET", "/prefix/test.txt", "test\n"))
+	assert.True(routeFound(sp, "GET", "/prefix////test.txt", "test\n"))
 
-	tea = strip.New()
-	tea.Filter(ServeFilter("prefix", "testdata"))
-	assert.True(routeFound(tea, "GET", "/prefix/test.txt", "test\n"))
-	assert.True(routeFound(tea, "GET", "/prefix////test.txt", "test\n"))
+	sp = strip.New()
+	sp.Filter(ServeFilter("prefix", "testdata"))
+	assert.True(routeFound(sp, "GET", "/prefix/test.txt", "test\n"))
+	assert.True(routeFound(sp, "GET", "/prefix////test.txt", "test\n"))
 
-	assert.True(routeNotFound(tea, "GET", "/test.txt"))
+	assert.True(routeNotFound(sp, "GET", "/test.txt"))
 }
 
 func Test_WrongPath(t *testing.T) {
 	assert := &strip.Assert{T: t}
 
-	tea := strip.New()
-	tea.Filter(ServeFilter("", "testdata"))
+	sp := strip.New()
+	sp.Filter(ServeFilter("", "testdata"))
 
-	assert.True(routeNotFound(tea, "GET", "/../testdata/test.txt"))
+	assert.True(routeNotFound(sp, "GET", "/../testdata/test.txt"))
 }
 
 func routeFound(sp *strip.Strip, method, urlStr, body string) bool {

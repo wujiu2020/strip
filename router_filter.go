@@ -79,7 +79,7 @@ func makeFilter(filter interface{}) (f FilterFunc) {
 	default:
 		val := reflect.ValueOf(filter)
 		if val.Kind() != reflect.Func {
-			panic("filter type must one of teapot.FilterFunc, inject.Provide, funcion")
+			panic("filter type must one of sppot.FilterFunc, inject.Provide, funcion")
 		}
 
 		f = wrapFilter(val.Interface())

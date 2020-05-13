@@ -16,9 +16,9 @@ func Test_GzipAll(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	before := false
 
-	tea := strip.New()
-	tea.Filter(All())
-	tea.Filter(func(r http.ResponseWriter) {
+	sp := strip.New()
+	sp.Filter(All())
+	sp.Filter(func(r http.ResponseWriter) {
 		r.(strip.ResponseWriter).Before(func(rw strip.ResponseWriter) {
 			before = true
 		})
@@ -29,7 +29,7 @@ func Test_GzipAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	tea.ServeHTTP(recorder, r)
+	sp.ServeHTTP(recorder, r)
 
 	// Make our assertions
 	_, ok := recorder.HeaderMap[HeaderContentEncoding]
@@ -44,7 +44,7 @@ func Test_GzipAll(t *testing.T) {
 
 	recorder = httptest.NewRecorder()
 	r.Header.Set(HeaderAcceptEncoding, "gzip")
-	tea.ServeHTTP(recorder, r)
+	sp.ServeHTTP(recorder, r)
 
 	// Make our assertions
 	_, ok = recorder.HeaderMap[HeaderContentEncoding]
@@ -83,9 +83,9 @@ func (h *hijackableResponse) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 func Test_ResponseWriter_Hijack(t *testing.T) {
 	hijackable := newHijackableResponse()
 
-	tea := strip.New()
-	tea.Filter(All())
-	tea.Filter(func(rw http.ResponseWriter) {
+	sp := strip.New()
+	sp.Filter(All())
+	sp.Filter(func(rw http.ResponseWriter) {
 		if hj, ok := rw.(http.Hijacker); !ok {
 			t.Error("Unable to hijack")
 		} else {
@@ -99,7 +99,7 @@ func Test_ResponseWriter_Hijack(t *testing.T) {
 	}
 
 	r.Header.Set(HeaderAcceptEncoding, "gzip")
-	tea.ServeHTTP(hijackable, r)
+	sp.ServeHTTP(hijackable, r)
 
 	if !hijackable.Hijacked {
 		t.Error("Hijack was not called")

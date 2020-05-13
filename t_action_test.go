@@ -89,26 +89,26 @@ func Test_FuncAction(t *testing.T) {
 	pathFunc := func(req *http.Request) {
 		path = req.URL.Path
 	}
-	tea := New().Routers(
+	sp := New().Routers(
 		Get(nopFunc),
 		Router("/home", Get(pathFunc)),
 		Router("/func1", Get((&TestFunc{name: "Yeap"}).Func)),
 		Router("/func2", Get((&TestFunc{name: "Yeap"}).FuncPtr)),
 	)
 
-	assert.True(routeFound(tea, "GET", "/"))
-	assert.True(routeFound(tea, "GET", "/home"))
+	assert.True(routeFound(sp, "GET", "/"))
+	assert.True(routeFound(sp, "GET", "/home"))
 	assert.True(path == "/home")
 
 	for _, p := range []string{"/func1", "/func2"} {
-		assert.True(responseEqual(tea, "GET", p, "Yeap"))
+		assert.True(responseEqual(sp, "GET", p, "Yeap"))
 	}
 }
 
 func Test_StructAction(t *testing.T) {
 	assert := &Assert{T: t}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		Get(nopFunc),
 		Router("/route1", Get(&TestStruct{}).Action("Struct")),
 		Router("/route2", Get(&TestStruct{}).Action("StructPtr")),
@@ -123,23 +123,23 @@ func Test_StructAction(t *testing.T) {
 	)
 
 	for _, p := range []string{"/route1", "/route2", "route3", "route4"} {
-		assert.True(responseEqual(tea, "GET", p, p))
+		assert.True(responseEqual(sp, "GET", p, p))
 	}
 
-	assert.True(responseEqual(tea, "GET", "/param/xx/teapot", "0teapot"))
-	assert.True(responseEqual(tea, "GET", "/param/2147483648/teapot", "2147483648teapot"))
-	assert.True(responseEqual(tea, "GET", "/param/100/teapot", "100teapot"))
-	assert.True(responseEqual(tea, "PUT", "/param/100", "100"))
-	assert.True(responseEqual(tea, "PUT", "/param/100/name/type", "100type"))
-	assert.True(responseEqual(tea, "PUT", "/param/100/name/type/end", "100nametype"))
-	assert.True(responseEqual(tea, "PUT", "/param-all/100", "100"))
-	assert.True(responseEqual(tea, "PUT", "/param-any/100", "100"))
+	assert.True(responseEqual(sp, "GET", "/param/xx/sppot", "0sppot"))
+	assert.True(responseEqual(sp, "GET", "/param/2147483648/sppot", "2147483648sppot"))
+	assert.True(responseEqual(sp, "GET", "/param/100/sppot", "100sppot"))
+	assert.True(responseEqual(sp, "PUT", "/param/100", "100"))
+	assert.True(responseEqual(sp, "PUT", "/param/100/name/type", "100type"))
+	assert.True(responseEqual(sp, "PUT", "/param/100/name/type/end", "100nametype"))
+	assert.True(responseEqual(sp, "PUT", "/param-all/100", "100"))
+	assert.True(responseEqual(sp, "PUT", "/param-any/100", "100"))
 }
 
 func Test_Action_Method(t *testing.T) {
 	assert := &Assert{T: t}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		Get(nopFunc),
 		Router("/route1", Get(&TestStruct{})),
 		Router("/route2", Get(&TestStruct{}).Action("Get")),
@@ -173,45 +173,45 @@ func Test_Action_Method(t *testing.T) {
 	)
 
 	// not match method should 404 not found
-	assert.True(routeNotFound(tea, "SOME", "/route1"))
-	assert.True(routeNotFound(tea, "SOME", "/route/all"))
+	assert.True(routeNotFound(sp, "SOME", "/route1"))
+	assert.True(routeNotFound(sp, "SOME", "/route/all"))
 
 	// lowwer-case method shoud support
-	assert.True(responseEqual(tea, "get", "/route1", "GetGET"))
+	assert.True(responseEqual(sp, "get", "/route1", "GetGET"))
 
-	assert.True(responseEqual(tea, "GET", "/route1", "GetGET"))
-	assert.True(responseEqual(tea, "GET", "/route2", "GetGET"))
-	assert.True(responseEqual(tea, "HEAD", "/route3", "GetHEAD"))
-	assert.True(responseEqual(tea, "HEAD", "/route4", "HeadHEAD"))
+	assert.True(responseEqual(sp, "GET", "/route1", "GetGET"))
+	assert.True(responseEqual(sp, "GET", "/route2", "GetGET"))
+	assert.True(responseEqual(sp, "HEAD", "/route3", "GetHEAD"))
+	assert.True(responseEqual(sp, "HEAD", "/route4", "HeadHEAD"))
 
-	assert.True(responseEqual(tea, "PUT", "/route/all", "/route/all"))
-	assert.True(responseEqual(tea, "GET", "/route/all", "GetGET"))
-	assert.True(responseEqual(tea, "HEAD", "/route/all", "HeadHEAD"))
-	assert.True(responseEqual(tea, "CUSTOM", "/route/all", "CustomCUSTOM"))
-	assert.True(routeNotFound(tea, "POST", "/route/all"))
+	assert.True(responseEqual(sp, "PUT", "/route/all", "/route/all"))
+	assert.True(responseEqual(sp, "GET", "/route/all", "GetGET"))
+	assert.True(responseEqual(sp, "HEAD", "/route/all", "HeadHEAD"))
+	assert.True(responseEqual(sp, "CUSTOM", "/route/all", "CustomCUSTOM"))
+	assert.True(routeNotFound(sp, "POST", "/route/all"))
 
-	assert.True(responseEqual(tea, "POST", "/route/all/method", "AllPOST"))
+	assert.True(responseEqual(sp, "POST", "/route/all/method", "AllPOST"))
 
-	assert.True(responseEqual(tea, "PUT", "/route/all/action", "/route/all/action"))
-	assert.True(responseEqual(tea, "GET", "/route/all/action", "GetGET"))
-	assert.True(responseEqual(tea, "HEAD", "/route/all/action", "HeadHEAD"))
-	assert.True(responseEqual(tea, "CUSTOM", "/route/all/action", "CustomCUSTOM"))
-	assert.True(responseEqual(tea, "NOTDEFINED", "/route/all/action", "CustomNOTDEFINED"))
-	assert.True(responseEqual(tea, "POST", "/route/all/action", "CustomPOST"))
+	assert.True(responseEqual(sp, "PUT", "/route/all/action", "/route/all/action"))
+	assert.True(responseEqual(sp, "GET", "/route/all/action", "GetGET"))
+	assert.True(responseEqual(sp, "HEAD", "/route/all/action", "HeadHEAD"))
+	assert.True(responseEqual(sp, "CUSTOM", "/route/all/action", "CustomCUSTOM"))
+	assert.True(responseEqual(sp, "NOTDEFINED", "/route/all/action", "CustomNOTDEFINED"))
+	assert.True(responseEqual(sp, "POST", "/route/all/action", "CustomPOST"))
 
-	assert.True(responseEqual(tea, "PUT", "/route/any", "/route/any"))
-	assert.True(responseEqual(tea, "GET", "/route/any", "AnyGET"))
-	assert.True(responseEqual(tea, "HEAD", "/route/any", "AnyHEAD"))
-	assert.True(responseEqual(tea, "CUSTOM", "/route/any", "AnyCUSTOM"))
-	assert.True(responseEqual(tea, "NOTDEFINED", "/route/any", "AnyNOTDEFINED"))
-	assert.True(responseEqual(tea, "POST", "/route/any", "AnyPOST"))
+	assert.True(responseEqual(sp, "PUT", "/route/any", "/route/any"))
+	assert.True(responseEqual(sp, "GET", "/route/any", "AnyGET"))
+	assert.True(responseEqual(sp, "HEAD", "/route/any", "AnyHEAD"))
+	assert.True(responseEqual(sp, "CUSTOM", "/route/any", "AnyCUSTOM"))
+	assert.True(responseEqual(sp, "NOTDEFINED", "/route/any", "AnyNOTDEFINED"))
+	assert.True(responseEqual(sp, "POST", "/route/any", "AnyPOST"))
 
-	assert.True(responseEqual(tea, "PUT", "/route/any/action", "/route/any/action"))
-	assert.True(responseEqual(tea, "GET", "/route/any/action", "TheanyGET"))
-	assert.True(responseEqual(tea, "HEAD", "/route/any/action", "TheanyHEAD"))
-	assert.True(responseEqual(tea, "CUSTOM", "/route/any/action", "TheanyCUSTOM"))
-	assert.True(responseEqual(tea, "NOTDEFINED", "/route/any/action", "TheanyNOTDEFINED"))
-	assert.True(responseEqual(tea, "POST", "/route/any/action", "TheanyPOST"))
+	assert.True(responseEqual(sp, "PUT", "/route/any/action", "/route/any/action"))
+	assert.True(responseEqual(sp, "GET", "/route/any/action", "TheanyGET"))
+	assert.True(responseEqual(sp, "HEAD", "/route/any/action", "TheanyHEAD"))
+	assert.True(responseEqual(sp, "CUSTOM", "/route/any/action", "TheanyCUSTOM"))
+	assert.True(responseEqual(sp, "NOTDEFINED", "/route/any/action", "TheanyNOTDEFINED"))
+	assert.True(responseEqual(sp, "POST", "/route/any/action", "TheanyPOST"))
 }
 
 func Test_StructValue(t *testing.T) {
@@ -220,13 +220,13 @@ func Test_StructValue(t *testing.T) {
 
 	router := &TestStruct{Name: "name1"}
 
-	tea := New().Routers(
+	sp := New().Routers(
 		Put(router).Action("ChangeName"),
 	)
 
-	assert.True(responseEqual(tea, "PUT", "/", "name1changed"))
+	assert.True(responseEqual(sp, "PUT", "/", "name1changed"))
 	assert.True(router.Name == "name1")
 
 	router.Name = "name2"
-	assert.True(responseEqual(tea, "PUT", "/", "name2changed"))
+	assert.True(responseEqual(sp, "PUT", "/", "name2changed"))
 }

@@ -1,3 +1,3 @@
 # Strip
 
-# Let's go, drink a cup of tea.
+# Let's go, drink a cup of sp.

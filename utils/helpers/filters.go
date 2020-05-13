@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/wujiu2020/strip"
 	reqlogger "github.com/wujiu2020/strip/request-logger"
-	"github.com/wujiu2020/strip/teapot"
 )
 
 const (
@@ -16,9 +16,9 @@ const (
 
 type HookFlag int
 
-type HookFunc func(*teapot.Teapot, HookFlag)
+type HookFunc func(*strip.Strip, HookFlag)
 
-func LoadClassicFilters(tea *teapot.Teapot, options ...interface{}) {
+func LoadClassicFilters(sp *strip.Strip, options ...interface{}) {
 	logOut := log.New(os.Stderr, "", log.LstdFlags|log.Lmicroseconds)
 
 	var loggerOption *reqlogger.LoggerOption
@@ -37,28 +37,28 @@ func LoadClassicFilters(tea *teapot.Teapot, options ...interface{}) {
 	}
 	if loggerOption == nil {
 		loggerOption = &reqlogger.LoggerOption{
-			ColorMode:     tea.Config.RunMode.IsDev(),
+			ColorMode:     sp.Config.RunMode.IsDev(),
 			LineInfo:      true,
-			ShortLine:     tea.Config.RunMode.IsProd(),
-			FlatLine:      tea.Config.RunMode.IsProd(),
-			LogStackLevel: teapot.LevelCritical,
+			ShortLine:     sp.Config.RunMode.IsProd(),
+			FlatLine:      sp.Config.RunMode.IsProd(),
+			LogStackLevel: strip.LevelCritical,
 		}
 	}
 
-	tea.Filter(
+	sp.Filter(
 		// 所有过滤器之前抓取 panic
-		teapot.RecoveryFilter(),
+		strip.RecoveryFilter(),
 	)
 
 	for _, h := range hooks {
-		h(tea, HookFlagBeforeAll)
+		h(sp, HookFlagBeforeAll)
 	}
 
-	tea.Filter(
+	sp.Filter(
 		// 在静态文件之后加入，跳过静态文件请求
 		reqlogger.ReqLoggerFilter(logOut, *loggerOption),
 
 		// 在 action 里直接返回一般请求结果
-		teapot.GenericOutFilter(),
+		strip.GenericOutFilter(),
 	)
 }

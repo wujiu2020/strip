@@ -19,7 +19,7 @@ type Strip struct {
 	// global filters
 	filters filters
 
-	// teapot app logger
+	// sppot app logger
 	logger LoggerAdv
 
 	// master inject of current app
