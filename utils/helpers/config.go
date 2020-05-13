@@ -39,11 +39,11 @@ func (s *SliceValue) Unique() {
 	*s = v
 }
 
-func LoadClassicEnv(sp *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) {
+func LoadClassicEnv(sp *strip.Strip, app string, env interface{}, dir string, addFiles ...string) {
 	LoadConfigFiles(sp, app, env, dir, addFiles...)
 }
 
-func LoadConfigFiles(sp *strip.Teapot, app string, env interface{}, dir string, addFiles ...string) (conf config.Configer) {
+func LoadConfigFiles(sp *strip.Strip, app string, env interface{}, dir string, addFiles ...string) (conf config.Configer) {
 	directory, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	wd, _ := os.Getwd()
 	wd, _ = filepath.Abs(wd)
@@ -107,7 +107,7 @@ func LoadConfigFiles(sp *strip.Teapot, app string, env interface{}, dir string, 
 	return
 }
 
-func UseGlobalLogger(sp *strip.Teapot) {
+func UseGlobalLogger(sp *strip.Strip) {
 	X.SetFlatLine(sp.Config.RunMode.IsProd())
 	X.SetColorMode(sp.Config.RunMode.IsDev())
 	X.SetShortLine(sp.Config.RunMode.IsProd())
